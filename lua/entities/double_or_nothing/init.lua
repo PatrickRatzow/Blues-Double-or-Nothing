@@ -268,6 +268,8 @@ function ENT:Use(act, call)
 				net.Start("bdn:winninginfo")
 				net.WriteInt(self:GetCashOutAmount(), 32)
 				net.Send(self.user)
+				
+				hook.Run("CODEBLUE.DoubleOrNothing.Withdraw", self.user, self:GetCashOutAmount())
 
 				--Disable spinning and wait 5 seconds 
 				self.canSpin = false
@@ -302,6 +304,9 @@ function ENT:Use(act, call)
 				self.canSpin = false
 				self:PlayJackpot() 
 				self:SetMultiplier(10) --Dont add otherwise we get unwarned screen effects
+				
+				hook.Run("CODEBLUE.DoubleOrNothing.WonJackpot", self.user)
+
 				return 
 			end
 
@@ -309,8 +314,9 @@ function ENT:Use(act, call)
 
 			--Play the sound
 			self:EmitSound("doubleornothing/x"..self:GetMultiplier()..".mp3", 65 * BDON_CONFIG.Volume, 100, 1)
-
   
+			hook.Run("CODEBLUE.DoubleOrNothing.WonSpin", self.user, self:GetMultiplier())
+
 			if shouldSpin then
 				self.canSpin = false
 				timer.Simple(0.5, function()
